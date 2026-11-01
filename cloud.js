@@ -208,3 +208,43 @@ window.addEventListener('storage',e=>{
     cloudReport('Another tab changed this alias. Download recovery, then reopen the alias before syncing.');
   }
 });
+
+async function exportHTML() {
+  progress();persistLocal();
+  report('Preparing answered HTML…');
+  try {
+    const copy=document.documentElement.cloneNode(true);
+    copy.querySelectorAll('script,dialog,nav,footer,.printanswer').forEach(n=>n.remove());
+    const head=copy.querySelector('head');
+    const style=document.createElement('style');
+    style.textContent='section{display:block!important;margin-bottom:24px}header{position:static!important;display:block!important}section{break-before:page}.saved-response{white-space:pre-wrap;border:1px solid #a0aaa1;padding:14px;background:white;overflow-wrap:anywhere}summary{cursor:default}';
+    head.append(style);
+    const title=copy.querySelector('title');if(title)title.textContent='Day 5 — Completed responses — '+(currentAlias||'unsaved');
+    const summary=document.createElement('header');
+    const name=document.createElement('h2');name.textContent='Day 5 — Lucia’s Diary · Student responses';
+    const meta=document.createElement('p');
+    meta.textContent='Alias: '+(currentAlias||'not set')+' · Completion: '+document.getElementById('completion').textContent+' · Exported: '+new Date().toLocaleString();
+    const note=document.createElement('p');note.textContent='Completion counts response boxes containing text; it does not measure correctness. The ungraded opening response is included. This file is a read-only copy for review.';
+    summary.append(name,meta,note);copy.querySelector('header').replaceWith(summary);
+    copy.querySelector('#printmeta')?.remove();
+    copy.querySelectorAll('textarea[data-answer]').forEach(t=>{
+      const response=document.createElement('div');response.className='saved-response';
+      response.textContent=document.getElementById(t.id).value||'[No response]';t.replaceWith(response);
+    });
+    copy.querySelectorAll('details').forEach(d=>d.setAttribute('open',''));
+    for(const button of copy.querySelectorAll('button.imagebutton'))button.replaceWith(button.querySelector('img'));
+    copy.querySelectorAll('button,input,select').forEach(n=>n.remove());
+    copy.querySelectorAll('*').forEach(n=>{for(const a of [...n.attributes])if(/^on/i.test(a.name))n.removeAttribute(a.name);});
+    // Embed image bytes so the downloaded file remains complete without an assets folder.
+    for(const img of copy.querySelectorAll('img')) {
+      const response=await fetch(new URL(img.getAttribute('src'),location.href));
+      if(!response.ok)throw Error('An image could not be included. Try again or use Print / PDF.');
+      const blob=await response.blob();
+      img.src=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=reject;reader.readAsDataURL(blob);});
+    }
+    const blob=new Blob(['<!doctype html>\n'+copy.outerHTML],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;
+    a.download='Day5-'+(currentAlias||'responses')+'-answered.html';a.click();
+    setTimeout(()=>URL.revokeObjectURL(url),3000);report('Answered HTML downloaded with responses, images, and completion percentage.');
+  }catch(err){report('HTML export failed: '+(err.message||'Please retry or use Print / PDF.'));}
+}
