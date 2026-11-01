@@ -13,7 +13,7 @@ The deployed URL is configured in cloud.js. Before classroom use:
 1. Use the corrected Code.gs in this repository to replace the Apps Script code.
 2. Run `setupDay5` once and authorize it. The execution log gives the private spreadsheet URL. Reruns reuse the existing spreadsheet.
 3. Deploy → Manage deployments → Edit → New version → Deploy, preserving the current /exec URL. Execute as Me; access Anyone.
-4. Open the lesson, choose a test alias, type a response, and click Save online. Wait for **Saved online**. Reload and confirm the response returns. Test a second browser using the same alias.
+4. Open the lesson, choose a test alias, type a response, and pause typing for a few seconds. Wait for **Saved online**. Reload and confirm the response returns. Test a second browser using the same alias.
 
 Live save and server restore were verified on November 1, 2026 using the anonymous alias `audit-nov1-01`. A test row with that alias remains in the spreadsheet. Browser saving, recovery downloads, Print/PDF, and Save answered HTML are available. The answered HTML is a read-only, self-contained submission with responses, embedded images, and completion percentage; it excludes the extra resume code.
 
