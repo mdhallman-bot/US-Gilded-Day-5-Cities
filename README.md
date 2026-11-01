@@ -15,7 +15,7 @@ The deployed URL is configured in cloud.js. Before classroom use:
 3. Deploy → Manage deployments → Edit → New version → Deploy, preserving the current /exec URL. Execute as Me; access Anyone.
 4. Open the lesson, choose a test alias, type a response, and click Save online. Wait for **Saved online**. Reload and confirm the response returns. Test a second browser using the alias and private resume code.
 
-The initial deployment was reachable, but live probing reported that setupDay5 had not run. The corrected script uses window.top.postMessage because Google embeds HTML responses in an extra frame. Until the script is updated and initialized, online saving cannot be confirmed. Browser saving, recovery downloads, and Print/PDF remain available.
+Live save and server restore were verified on November 1, 2026 using the anonymous alias `audit-nov1-01`. A test row with that alias remains in the spreadsheet. Browser saving, recovery downloads, Print/PDF, and Save answered HTML are available. The answered HTML is a read-only, self-contained submission with responses, seven embedded images, and completion percentage; it excludes the private resume code.
 
 ## Student saving
 
@@ -30,4 +30,8 @@ An alias and random private resume code identify one response record. There is n
 
 ## Validation
 
-JavaScript syntax checked; backend save/load, retry, conflict, validation and key isolation tested with mocks. Live GET health check passed. Live load returned the missing-setup message. Complete live save/resume verification after the activation steps above.
+Audited November 1, 2026: lesson startup/navigation; ten student pages; image loading; cartoon detail zoom; vocabulary and sentence-frame markup; live save acknowledgement and server restore; downloaded answered HTML checked for response text, 15 response blocks, completion summary, seven embedded images, and absence of scripts/private resume code. Backend and client save/retry/conflict behavior also passed local tests. PDF completion metadata was checked in the implementation; native print-to-PDF output was not generated in this audit.
+
+Completion is the percentage of 15 response boxes containing text (including the ungraded opener); it is not a correctness score. Example: 1/15 = 7%.
+
+Historical clarification: an April 1900 arrival would be processed at the Barge Office during the temporary closure of Ellis Island; the rebuilt island station opened December 17, 1900. The lesson now explains this explicitly. The modern aerial image remains labeled as a later geographic view.
