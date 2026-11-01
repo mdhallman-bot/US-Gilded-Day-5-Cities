@@ -6,7 +6,7 @@ const cloudReport = text => cloudLabel.textContent = text;
 function randomCode(bytes=32) {
   return Array.from(crypto.getRandomValues(new Uint8Array(bytes)), n=>n.toString(16).padStart(2,'0')).join('');
 }
-function contentStamp(s) { return JSON.stringify({page:s.page,answers:s.answers}); }
+function contentStamp(s) { return JSON.stringify({page:Number.isInteger(s.page)?s.page:0,answers:Object.fromEntries(fields.map(f=>[f.id,typeof s.answers?.[f.id]==='string'?s.answers[f.id]:'']))}); }
 function hasWork(s) { return Object.values(s.answers||{}).some(v=>String(v).trim()); }
 function cloudData() {
   if (!cloud) return {};
@@ -233,7 +233,8 @@ async function exportHTML() {
     });
     copy.querySelectorAll('details').forEach(d=>d.setAttribute('open',''));
     for(const button of copy.querySelectorAll('button.imagebutton'))button.replaceWith(button.querySelector('img'));
-    copy.querySelectorAll('button,input,select').forEach(n=>n.remove());
+    copy.querySelectorAll('button.hotspot').forEach(button=>{const number=document.createElement('span');number.className='hotspot static-hotspot';number.setAttribute('style',button.getAttribute('style')||'');number.textContent=button.querySelector('span').textContent;button.replaceWith(number)});
+    copy.querySelectorAll('button,input,select,#ellisWhole,.image-instructions').forEach(n=>n.remove());
     copy.querySelectorAll('*').forEach(n=>{for(const a of [...n.attributes])if(/^on/i.test(a.name))n.removeAttribute(a.name);});
     // Embed image bytes so the downloaded file remains complete without an assets folder.
     for(const img of copy.querySelectorAll('img')) {
