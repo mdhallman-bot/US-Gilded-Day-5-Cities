@@ -23,7 +23,7 @@ function persistLocal() {
 function save() {
   persistLocal();
   clearTimeout(cloudTimer);
-  if (cloud?.ready && !cloud.blocked) cloudTimer=setTimeout(()=>flushCloud(),2200);
+  if (cloud?.ready && !cloud.blocked) {cloudReport('Changes saved in this browser; online save pending…');cloudTimer=setTimeout(()=>flushCloud(),2200);}
 }
 function rpc(payload) {
   if (activeRequest) return Promise.reject(Error('A request is already running. Try again shortly.'));
